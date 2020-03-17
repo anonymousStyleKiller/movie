@@ -1,5 +1,4 @@
 export const moviesData = [
-
             {
                 "popularity": 912.062,
                 "vote_count": 673,

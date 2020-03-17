@@ -7,10 +7,9 @@ class MovieItem extends React.Component {
             willWatch: false
         };
     }
-    
+
     render() {
         const {movie, removeMovie, addMovieToWillWatch, removeMovieFromWillWatch} = this.props;
-        console.log("render");
         return (
             <div className="card">
                 <img className="card-img-top"
