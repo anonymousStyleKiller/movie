@@ -2,19 +2,21 @@ import React from 'react';
 import '../App.css';
 import MovieItem from "./MovieItem";
 import MovieTabs from "./MovieTabs";
+import Pagination from "./Pagination";
 
 let API_URL = "http://api.themoviedb.org/3";
 let API_KEY = "1c811a82f60c56ecb5d33a4629ef2bea";
 
 
-//UI = fn(state, props)
 class App extends React.Component {
     constructor() {
         super();
         this.state = {
             movies: [],
             moviesWillWatch: [],
-            sort_by: "vote_average.desc"
+            page: 1,
+            sort_by: "vote_average.desc",
+            total_pages: 0
         }
     }
 
@@ -57,30 +59,45 @@ class App extends React.Component {
             });
     };
 
+    updatePages = (value) => {
+        this.setState(
+            {
+                page: value
+            });
+    };
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.sort_by !== this.state.sort_by) {
+            this.getMovies();
+        }
+        if (prevState.page !== this.state.page) {
             this.getMovies();
         }
     }
 
     getMovies = () => {
-        fetch(`${API_URL}/discover/movie?api_key=${API_KEY}&sort_by=${this.state.sort_by}`).then((response) => {
-            return response.json();
-        }).then((data) => {
+        fetch(`${API_URL}/discover/movie?api_key=${API_KEY}&sort_by=${this.state.sort_by}&page=${this.state.page}`)
+            .then((response) => {
+                return response.json();
+            }).then((data) => {
             this.setState({
-                movies: data.results
+                movies: data.results,
+                total_pages: data.total_pages
             })
         })
     };
 
+
     render() {
+        console.log(this.state.pages);
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-9">
                         <div className="row mb-4">
                             <div className="col-12">
-                                <MovieTabs sortBy={this.state.sort_by} updateSortBy={this.updateSortBy}/>
+                                <MovieTabs sortBy={this.state.sort_by}
+                                           updateSortBy={this.updateSortBy}/>
                             </div>
                         </div>
                         <div className="row">
@@ -95,6 +112,14 @@ class App extends React.Component {
                                     </div>
                                 );
                             })}
+                        </div>
+
+                        <div className="row mb-4">
+                            <div className="col-12">
+                                <Pagination total_pages={this.state.total_pages}
+                                            page={this.state.page}
+                                            updatePages={this.updatePages}/>
+                            </div>
                         </div>
                     </div>
                     <div className="col-3">
