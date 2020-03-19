@@ -6,7 +6,6 @@ const MovieTabs = (props) => {
     const handleClick = value => () => {
         updateSortBy(value);
     };
-
     const getClassLink = value => {
         return `nav-link   ${sortBy === value ? "active" : ""}`;
     };
